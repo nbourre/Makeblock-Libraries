@@ -64,7 +64,11 @@
 /* Exported macro ------------------------------------------------------------*/
 #define I2C_ERROR                  (-1)
 
+#ifndef MeAuriga_H
 #define GYRO_DEFAULT_ADDRESS       (0x68)
+#else
+#define GYRO_DEFAULT_ADDRESS       (0x69)
+#endif
 
 /**
  * Class: MeGyro
