@@ -719,8 +719,8 @@ private:
    uint8_t _IntNum;
    uint8_t _Slot;
    int16_t _Encoder_output;
-   long _Measurement_speed_time;
-   long _Encoder_move_time;
+   unsigned long _Measurement_speed_time;
+   unsigned long _Encoder_move_time;
    bool _enabled;
    cb _callback;
 };
