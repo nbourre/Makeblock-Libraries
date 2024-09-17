@@ -2,6 +2,11 @@
 
 Arduino Library for Makeblock Electronic Modules
 
+## Note
+The original library from Makeblock is not maintained anymore. I have a fleet of Makeblock Ranger robots and I needed to fix some issues with the library. I will try to keep it up to date with the original library.
+
+Feel free to open an issue if you have any problem with the library or create a pull request if you have a fix.
+
 # Copyright notice
 
 In makeblock's library, some of the modules are derived from other open source projects, and also part of some code is inspired by the algorithms of other individuals or organizations. We will retain the copyright of the original open source code.
