@@ -19,7 +19,7 @@ This document describes the public functions available in the `MeRGBLineFollower
   - [`void setpin(uint8_t AD0, uint8_t INT);`](#void-setpinuint8_t-ad0-uint8_t-int)
 - [Sensor Readings](#sensor-readings)
   - [`void updataAllSensorValue();`](#void-updataallsensorvalue)
-  - [uint8\_t getADCValueRGBX()](#uint8_t-getadcvaluergbx)
+  - [`uint8_t getADCValueRGBX();`](#uint8_t-getadcvaluergbx)
   - [`void loop();`](#void-loop)
 - [Line Tracking](#line-tracking)
   - [`int16_t getPositionOffset();`](#int16_t-getpositionoffset)
@@ -86,7 +86,7 @@ Sets the control pins for address selection when not using Makeblock ports.
 
 Reads all sensor values and updates internal buffers.
 
-## uint8_t getADCValueRGBX()
+## `uint8_t getADCValueRGBX();`
 
 ```cpp
 uint8_t getADCValueRGB1();
