@@ -1,4 +1,4 @@
-# Makeblock Library v3.28.0
+# Makeblock Library v3.28.1
 
 Arduino Library for Makeblock Electronic Modules
 
@@ -18,6 +18,7 @@ These modules is derived from other open source projects:
 - Me7SegmentDisplay
 - MeOneWire
 - MeStepper
+- [MeRGBLineFollower](./doc/devices/MeRGBLineFollower.md)
 
 and these modules is inspired by some projects:
 
