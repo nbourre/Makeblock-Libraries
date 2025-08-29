@@ -180,28 +180,69 @@ double MeUltrasonicSensor::distanceInch(uint16_t MAXinch)
 long MeUltrasonicSensor::measure(unsigned long timeout)
 {
   long duration;
-  if(millis() - _lastEnterTime > 23)
-  {
-    _measureFlag = true; 
+  if (!nonBlockingMeasuring) {
+    // Blocking mode (default)
+    if(millis() - _lastEnterTime > 23)
+    {
+      _measureFlag = true; 
+    }
+    if(_measureFlag == true)
+    {
+      _lastEnterTime = millis();
+      _measureFlag = false;
+      MePort::dWrite2(LOW);
+      delayMicroseconds(2);
+      MePort::dWrite2(HIGH);
+      delayMicroseconds(10);
+      MePort::dWrite2(LOW);
+      pinMode(s2, INPUT);
+      duration = pulseIn(s2, HIGH);
+      _measureValue = duration;
+    }
+    else
+    {
+      duration = _measureValue;
+    }
+    return(duration);
+  } else {
+    // Non-blocking mode: state machine
+    static enum { NB_IDLE, NB_TRIGGERED, NB_WAIT_FOR_ECHO_START, NB_WAIT_FOR_ECHO_END } nb_state = NB_IDLE;
+    static unsigned long triggerTime = 0, echoStartTime = 0, echoEndTime = 0;
+    static bool echoStarted = false;
+    switch (nb_state) {
+      case NB_IDLE:
+        if (millis() - _lastEnterTime > 23) {
+          _lastEnterTime = millis();
+          MePort::dWrite2(LOW);
+          delayMicroseconds(2);
+          MePort::dWrite2(HIGH);
+          delayMicroseconds(10);
+          MePort::dWrite2(LOW);
+          pinMode(s2, INPUT);
+          triggerTime = micros();
+          nb_state = NB_WAIT_FOR_ECHO_START;
+        }
+        break;
+      case NB_WAIT_FOR_ECHO_START:
+        if (digitalRead(s2) == HIGH) {
+          echoStartTime = micros();
+          nb_state = NB_WAIT_FOR_ECHO_END;
+        } else if (micros() - triggerTime > timeout) {
+          nb_state = NB_IDLE; // Timeout, restart
+        }
+        break;
+      case NB_WAIT_FOR_ECHO_END:
+        if (digitalRead(s2) == LOW) {
+          echoEndTime = micros();
+          _measureValue = echoEndTime - echoStartTime;
+          nb_state = NB_IDLE;
+        } else if (micros() - echoStartTime > timeout) {
+          nb_state = NB_IDLE; // Timeout, restart
+        }
+        break;
+    }
+    // Always return last measured value
+    return _measureValue;
   }
-
-  if(_measureFlag == true)
-  {
-    _lastEnterTime = millis();
-    _measureFlag = false;
-    MePort::dWrite2(LOW);
-    delayMicroseconds(2);
-    MePort::dWrite2(HIGH);
-    delayMicroseconds(10);
-    MePort::dWrite2(LOW);
-    pinMode(s2, INPUT);
-    duration = pulseIn(s2, HIGH);
-    _measureValue = duration;
-  }
-  else
-  {
-    duration = _measureValue;
-  }
-  return(duration);
 }
 

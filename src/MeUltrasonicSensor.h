@@ -163,8 +163,11 @@ public:
  *   None
  */
   long measure(unsigned long = 30000);
+    // Set non-blocking measuring mode
+  void setNonBlockingMeasuring(bool enable) { nonBlockingMeasuring = enable; }
 private:
   volatile uint8_t  _SignalPin;
+  bool nonBlockingMeasuring = false;
   volatile bool _measureFlag;
   volatile long _lastEnterTime;
   volatile float _measureValue;
