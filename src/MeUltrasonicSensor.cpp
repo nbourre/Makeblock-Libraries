@@ -221,6 +221,7 @@ long MeUltrasonicSensor::measure(unsigned long timeout)
           pinMode(s2, INPUT);
           triggerTime = micros();
           nb_state = NB_WAIT_FOR_ECHO_START;
+          
         }
         break;
       case NB_WAIT_FOR_ECHO_START:

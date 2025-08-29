@@ -53,6 +53,10 @@
 #ifndef MeUltrasonicSensor_H
 #define MeUltrasonicSensor_H
 
+#ifdef __GNUC__
+#pragma message("WARNING: Avoid using blocking code (delay, Serial.print, etc.) in the main loop when using MeUltrasonicSensor non-blocking mode.")
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <Arduino.h>
