@@ -25,6 +25,7 @@ MeGyro gyro(0, 0x69);
 const int TEMP_PIN = A0;
 
 float tempOutput = 0;
+float batt;
 
 int ct = millis(); // currentTime
 
@@ -40,12 +41,13 @@ void loop()
 {
   // Board timing
   ct = millis();
-  
-  led_loop_task();
-  measure_sound();  
-  gyro_task(ct);
-  tempOutput = temp_task(ct);
-    
+
+  ledLoopTask();
+  measureSound();
+  gyroTask(ct);
+  tempOutput = tempTask(ct);
+  batt = readBatteryTask(ct);
+
   serialPrintTask(ct);
 }
 
@@ -53,7 +55,7 @@ int sound_cnt = 0;   // sampling count
 float sound_avg = 0; // sound average
 short sound_reset_flag = 1;
 
-void measure_sound() {
+void measureSound() {
   if (sound_reset_flag != 0) {
     sound_cnt = 0;
     sound_avg = 0.0;
@@ -67,9 +69,9 @@ void measure_sound() {
 }
 
 
-void gyro_task(unsigned long currentTime) {
+void gyroTask(unsigned long currentTime) {
   static unsigned long lastTime = 0;
-  const int rate = 200;
+  const int rate = 20;
   
   static unsigned long lastPrint = 0;
   const int printRate = 200;
@@ -89,8 +91,29 @@ void gyro_task(unsigned long currentTime) {
     Serial.print(gyro.getAngleY() );
     Serial.print(" Z:");
     Serial.println(gyro.getAngleZ() );
+  }
+}
+
+// Tâche de lecture de la tension batterie
+float readBatteryTask(unsigned long currentTime) {
+  static unsigned long lastTime = 0;
+  const unsigned long interval = 500; // 500 ms
+  static float voltage = 0.0;
+
+  if (currentTime - lastTime >= interval) {
+    lastTime = currentTime;
+
+    int raw = analogRead(A4);
+
+    const float VREF = 5.0; // Référence ADC (par défaut VCC)
+    const float R1 = 100000.0;
+    const float R2 = 51000.0;
+
+    voltage = raw * (VREF / 1023.0) * ((R1 + R2) / R2);
 
   }
+
+  return voltage;
 }
 
 void serialPrintTask(unsigned long currentTime) {
@@ -114,12 +137,13 @@ void serialPrintTask(unsigned long currentTime) {
   Serial.print(tempOutput);
 
   Serial.print("\tPower = ");
-  Serial.print(analogRead(A4));
+  Serial.print(batt);
+  Serial.print(" V");
 
   Serial.println();
 }
 
-void led_loop_task()
+void ledLoopTask()
 {
   static float j;
   static float f;
@@ -143,7 +167,7 @@ void led_loop_task()
 Temperature values
 Src : https://github.com/search?q=TERMISTORNOMINAL+auriga&type=code
 */
-float calculate_temp(int16_t In_temp)
+float calculateTemp(int16_t In_temp)
 {
   const int16_t TEMPERATURENOMINAL     = 25;    //Nominal temperature depicted on the datasheet
   const int16_t SERIESRESISTOR         = 10000; // Value of the series resistor
@@ -169,7 +193,7 @@ float calculate_temp(int16_t In_temp)
 
 
 
-float temp_task(unsigned long currentTime) {
+float tempTask(unsigned long currentTime) {
   static unsigned long lastTime = 0;
   const int rate = 200;
   static float temperature = 0.0;
@@ -183,7 +207,7 @@ float temp_task(unsigned long currentTime) {
   lastTime = currentTime;
   
   tempSensorValue = analogRead(TEMP_PIN);
-  temperature = calculate_temp(tempSensorValue);
-  
+  temperature = calculateTemp(tempSensorValue);
+
   return temperature;
 }
