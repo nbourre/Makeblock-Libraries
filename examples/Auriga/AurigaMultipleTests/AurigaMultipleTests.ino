@@ -5,8 +5,6 @@
  * @date    2020/04/01
  * @brief   Description: this file is sample code for RGB LED, gyro, temperature.
  *
- * @par Update Log
- * - 2025/09/03: Added task for measuring the battery level. NB
  */
 
 #include <MeAuriga.h>
@@ -96,7 +94,7 @@ void gyroTask(unsigned long currentTime) {
   }
 }
 
-// Battery voltage reading task
+// Tâche de lecture de la tension batterie
 float readBatteryTask(unsigned long currentTime) {
   static unsigned long lastTime = 0;
   const unsigned long interval = 500; // 500 ms
@@ -107,7 +105,7 @@ float readBatteryTask(unsigned long currentTime) {
 
     int raw = analogRead(A4);
 
-    const float VREF = 5.0; // ADC reference (default VCC)
+    const float VREF = 5.0; // Référence ADC (par défaut VCC)
     const float R1 = 100000.0;
     const float R2 = 51000.0;
 
