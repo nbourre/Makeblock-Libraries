@@ -326,6 +326,26 @@ public:
 
 /**
  * \par Function
+ *   getTemperature
+ * \par Description
+ *   Get the temperature value from MPU-6050 internal temperature sensor.
+ * \param[in]
+ *   None
+ * \par Output
+ *   None
+ * \return
+ *   The temperature in degrees Celsius
+ * \par Others
+ *   Temperature is calculated from raw sensor data using the formula:
+ *   Temperature = (TEMP_OUT / 340.0) + 36.53
+ * \author
+ *   Nick B
+ */
+  double getTemperature(void) const;
+
+
+/**
+ * \par Function
  *   resetData
  * \par Description
  *   Reset the angle value of setting axis.
@@ -348,26 +368,28 @@ private:
   double  gSensitivity; /* for 500 deg/s, check data sheet */
   double  gx, gy, gz;
   double  gyrX, gyrY, gyrZ;
-  int16_t accX, accY, accZ;
+  int16_t accX, accY, accZ, rawTemp;
   double  gyrXoffs, gyrYoffs, gyrZoffs;
   uint8_t i2cData[14];
   uint8_t Device_Address;
-  
-/**
- * \par Function
- *   deviceCalibration
- * \par Description
- *   Calibration function for the MeGyro. 
- * \param[in]
- *   None
- * \par Output
- *   None
- * \return
- *   None.
- * \par Others
- *   The calibration function will be called in initial process, please keep the 
- *   device in a rest status at that time.
- */
+
+  double temperature;
+
+  /**
+   * \par Function
+   *   deviceCalibration
+   * \par Description
+   *   Calibration function for the MeGyro.
+   * \param[in]
+   *   None
+   * \par Output
+   *   None
+   * \return
+   *   None.
+   * \par Others
+   *   The calibration function will be called in initial process, please keep the
+   *   device in a rest status at that time.
+   */
   void deviceCalibration(void);
 
 /**
