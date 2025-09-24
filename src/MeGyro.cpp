@@ -173,9 +173,9 @@ void MeGyro::begin(void)
   gyrX = 0;
   gyrY = 0;
   gyrZ = 0;
-  accX = 0;
-  accY = 0;
-  accZ = 0;
+  rawAccX = 0;
+  rawAccY = 0;
+  rawAccZ = 0;
   gyrXoffs = 0;
   gyrYoffs = 0;
   gyrZoffs = 0;
@@ -229,15 +229,15 @@ void MeGyro::update(void)
   gyrY = ( ( (i2cData[10] << 8) | i2cData[11] ) - gyrYoffs) / gSensitivity;
   gyrZ = ( ( (i2cData[12] << 8) | i2cData[13] ) - gyrZoffs) / gSensitivity;  
 
-  ax = atan2(accX, sqrt( pow(accY, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;
-  ay = atan2(accY, sqrt( pow(accX, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;
+  ax = atan2(rawAccX, sqrt( pow(rawAccY, 2) + pow(rawAccZ, 2) ) ) * 180 / 3.1415926;
+  ay = atan2(rawAccY, sqrt( pow(rawAccX, 2) + pow(rawAccZ, 2) ) ) * 180 / 3.1415926;
 
   temperature = (rawTemp / 340.0) + 36.53;
 
   dt = (double)(millis() - last_time) / 1000;
   last_time = millis();
 
-  if(accZ > 0)
+  if(rawAccZ > 0)
   {
     gx = gx - gyrY * dt;
     gy = gy + gyrX * dt;
@@ -298,9 +298,9 @@ void MeGyro::fast_update(void)
 
   double ax, ay;
   /* assemble 16 bit sensor data */
-  accX = ( (i2cData[0] << 8) | i2cData[1] );
-  accY = ( (i2cData[2] << 8) | i2cData[3] );
-  accZ = ( (i2cData[4] << 8) | i2cData[5] );  
+  rawAccX = ( (i2cData[0] << 8) | i2cData[1] );
+  rawAccY = ( (i2cData[2] << 8) | i2cData[3] );
+  rawAccZ = ( (i2cData[4] << 8) | i2cData[5] );  
 
   rawTemp = ( (i2cData[6] << 8) | i2cData[7] );
   
@@ -308,12 +308,12 @@ void MeGyro::fast_update(void)
   gyrY = ( ( (i2cData[10] << 8) | i2cData[11] ) - gyrYoffs) / gSensitivity;
   gyrZ = ( ( (i2cData[12] << 8) | i2cData[13] ) - gyrZoffs) / gSensitivity;  
   
-  ax = atan2(accX, sqrt( pow(accY, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;
-  ay = atan2(accY, sqrt( pow(accX, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;  
+  ax = atan2(rawAccX, sqrt( pow(rawAccY, 2) + pow(rawAccZ, 2) ) ) * 180 / 3.1415926;
+  ay = atan2(rawAccY, sqrt( pow(rawAccX, 2) + pow(rawAccZ, 2) ) ) * 180 / 3.1415926;  
 
   temperature = (rawTemp / 340.0) + 36.53;
 
-  if(accZ > 0)
+  if(rawAccZ > 0)
   {
     gx = gx - gyrY * dt;
     gy = gy + gyrX * dt;

@@ -369,7 +369,7 @@ private:
   double  acceSensitivity; /* for 2g, check data sheet */
   double  gx, gy, gz;
   double  gyrX, gyrY, gyrZ;
-  int16_t accX, accY, accZ, rawTemp;
+  int16_t rawAccX, rawAccY, rawAccZ, rawTemp;
   double  gyrXoffs, gyrYoffs, gyrZoffs;
   uint8_t i2cData[14];
   uint8_t Device_Address;
