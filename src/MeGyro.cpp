@@ -220,12 +220,18 @@ void MeGyro::update(void)
   /* assemble 16 bit sensor data */
   accX = ( (i2cData[0] << 8) | i2cData[1] );
   accY = ( (i2cData[2] << 8) | i2cData[3] );
-  accZ = ( (i2cData[4] << 8) | i2cData[5] );  
+  accZ = ( (i2cData[4] << 8) | i2cData[5] );
+  
+  rawTemp = ( (i2cData[6] << 8) | i2cData[7] );
+
   gyrX = ( ( (i2cData[8] << 8) | i2cData[9] ) - gyrXoffs) / gSensitivity;
   gyrY = ( ( (i2cData[10] << 8) | i2cData[11] ) - gyrYoffs) / gSensitivity;
   gyrZ = ( ( (i2cData[12] << 8) | i2cData[13] ) - gyrZoffs) / gSensitivity;  
+
   ax = atan2(accX, sqrt( pow(accY, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;
-  ay = atan2(accY, sqrt( pow(accX, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;  
+  ay = atan2(accY, sqrt( pow(accX, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;
+
+  temperature = (rawTemp / 340.0) + 36.53;
 
   dt = (double)(millis() - last_time) / 1000;
   last_time = millis();
@@ -483,6 +489,28 @@ double MeGyro::getAngle(uint8_t index) const
   {
     return getAngleZ();
   }
+}
+
+/**
+ * \par Function
+ *   getTemperature
+ * \par Description
+ *   Get the temperature value from MPU-6050 internal temperature sensor.
+ * \param[in]
+ *   None
+ * \par Output
+ *   None
+ * \return
+ *   The temperature in degrees Celsius
+ * \par Others
+ *   Temperature is calculated from raw sensor data using the formula:
+ *   Temperature = (TEMP_OUT / 340.0) + 36.53
+ * \author
+ *   Nick B
+ */
+double MeGyro::getTemperature(void) const
+{
+  return temperature;
 } 
 
 /**
