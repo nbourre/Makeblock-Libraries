@@ -50,6 +50,57 @@ If you have a discussion about licensing issues, please contact me (myan@makeblo
 
    MegaPi <------->  MeMegaPi.h
 
+## New Features in v3.29.0 - Enhanced MeGyro Class
+
+The MeGyro class has been significantly enhanced with full accelerometer and temperature sensor support for the MPU-6050 chip:
+
+### New Methods Added:
+
+#### Accelerometer Methods:
+- `double getAccX()` - Get X-axis acceleration in g units (gravity = 1.0g)
+- `double getAccY()` - Get Y-axis acceleration in g units
+- `double getAccZ()` - Get Z-axis acceleration in g units  
+- `double getAcc(uint8_t index)` - Get acceleration for specified axis (1=X, 2=Y, 3=Z)
+
+#### Temperature Method:
+- `double getTemperature()` - Get temperature from MPU-6050 internal sensor in degrees Celsius
+
+### Usage Example:
+```cpp
+#include "MeAuriga.h"
+
+MeGyro gyro(0, 0x69); // For Auriga onboard gyro
+
+void setup() {
+  Serial.begin(115200);
+  gyro.begin();
+}
+
+void loop() {
+  gyro.update();
+  
+  // Read gyroscope angles (degrees)
+  Serial.print("Angles - X: "); Serial.print(gyro.getAngleX(), 2);
+  Serial.print(" Y: "); Serial.print(gyro.getAngleY(), 2);
+  Serial.print(" Z: "); Serial.println(gyro.getAngleZ(), 2);
+  
+  // Read accelerations (g units)
+  Serial.print("Accel - X: "); Serial.print(gyro.getAccX(), 3);
+  Serial.print(" Y: "); Serial.print(gyro.getAccY(), 3);
+  Serial.print(" Z: "); Serial.println(gyro.getAccZ(), 3);
+  
+  // Read temperature
+  Serial.print("Temperature: "); Serial.print(gyro.getTemperature(), 1);
+  Serial.println(" °C");
+  
+  delay(100);
+}
+```
+
+### Example Programs:
+- **Auriga_MeGyroTest**: Enhanced test program with Serial Plotter compatibility
+- **AurigaTempSensors**: Demonstrates reading from both gyro temperature sensor and onboard NTC thermistor
+
 ## Revision of history:
 
 |Author      |       Time      |   Version    |    Descr     |
@@ -66,7 +117,7 @@ If you have a discussion about licensing issues, please contact me (myan@makeblo
 |Vincent He  |     2019/09/02  |   3.2.7      |    1.fix the problem that the electronic compass Mecompass is hung on the Orion mainboard 7 or 8 ports and communication will be hung dead. 2.fix the problem that the function getPointFast() in MeHumitureSensor.cpp does not normally output the value. 3.fix the problem that compile smartservo_test.ino firmware error report using the arduino1.6.5 environment with mBlock V3.4.12. 4.remove MeSuperVariable.cpp/MeSuperVariable.h. 5.fix the problem that ultrasonic module can only measure the maximum range of 375cm,and the maximum range of normal requirements is 400cm.|
 | Nicolas Bourré |  2023/10/16 | 3.28 | 1. Added missing `gyro.getGyroZ`. 2. Compliant semver.org version number. 3. Added `gyro.resetData` function. 4. Modified the gyro address if it is an Auriga board. |
 | Nicolas Bourré |  2025/04/30 | 3.28.1 | Added the MeRGBLineFollower class. |
-| Nick B |  2025/09/24 | 3.29.0 | 1. Added `getTemperature()` method to MeGyro class for MPU-6050 internal temperature sensor. 2. Fixed multiple definition linker errors by moving MeAuriga global array initializations to .cpp file. 3. Added AurigaTempSensors example demonstrating dual temperature sensor reading (gyro + onboard NTC). |
+| Nick B |  2025/09/24 | 3.29.0 | 1. Added `getTemperature()` method to MeGyro class for MPU-6050 internal temperature sensor. 2. Added full accelerometer functionality to MeGyro class with `getAccX()`, `getAccY()`, `getAccZ()`, and `getAcc(index)` methods. 3. Fixed multiple definition linker errors by moving MeAuriga global array initializations to .cpp file. 4. Fixed accelerometer initialization by properly configuring register 0x1c for ±2g range. 5. Added AurigaTempSensors example demonstrating dual temperature sensor reading (gyro + onboard NTC). 6. Updated Auriga_MeGyroTest example with Serial Plotter compatibility and comprehensive sensor data display. 7. Enhanced MeGyro class with proper accelerometer sensitivity handling and raw data processing. |
 
 # Issues
 
