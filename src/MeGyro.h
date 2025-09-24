@@ -366,6 +366,7 @@ private:
   volatile uint8_t  _AD0;
   volatile uint8_t  _INT;
   double  gSensitivity; /* for 500 deg/s, check data sheet */
+  double  acceSensitivity; /* for 2g, check data sheet */
   double  gx, gy, gz;
   double  gyrX, gyrY, gyrZ;
   int16_t accX, accY, accZ, rawTemp;

@@ -166,6 +166,7 @@ void MeGyro::setpin(uint8_t AD0, uint8_t INT)
 void MeGyro::begin(void)
 {
   gSensitivity = 65.5; //for 500 deg/s, check data sheet
+  acceSensitivity = 16384.0; // for 2g, default value for MPU6050 check data sheet
   gx = 0;
   gy = 0;
   gz = 0;
@@ -300,11 +301,17 @@ void MeGyro::fast_update(void)
   accX = ( (i2cData[0] << 8) | i2cData[1] );
   accY = ( (i2cData[2] << 8) | i2cData[3] );
   accZ = ( (i2cData[4] << 8) | i2cData[5] );  
+
+  rawTemp = ( (i2cData[6] << 8) | i2cData[7] );
+  
   gyrX = ( ( (i2cData[8] << 8) | i2cData[9] ) - gyrXoffs) / gSensitivity;
   gyrY = ( ( (i2cData[10] << 8) | i2cData[11] ) - gyrYoffs) / gSensitivity;
   gyrZ = ( ( (i2cData[12] << 8) | i2cData[13] ) - gyrZoffs) / gSensitivity;  
+  
   ax = atan2(accX, sqrt( pow(accY, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;
   ay = atan2(accY, sqrt( pow(accX, 2) + pow(accZ, 2) ) ) * 180 / 3.1415926;  
+
+  temperature = (rawTemp / 340.0) + 36.53;
 
   if(accZ > 0)
   {
