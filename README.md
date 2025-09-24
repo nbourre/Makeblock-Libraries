@@ -1,4 +1,4 @@
-# Makeblock Library v3.28.1
+# Makeblock Library v3.29.0 - Updated
 
 Arduino Library for Makeblock Electronic Modules
 
@@ -66,6 +66,7 @@ If you have a discussion about licensing issues, please contact me (myan@makeblo
 |Vincent He  |     2019/09/02  |   3.2.7      |    1.fix the problem that the electronic compass Mecompass is hung on the Orion mainboard 7 or 8 ports and communication will be hung dead. 2.fix the problem that the function getPointFast() in MeHumitureSensor.cpp does not normally output the value. 3.fix the problem that compile smartservo_test.ino firmware error report using the arduino1.6.5 environment with mBlock V3.4.12. 4.remove MeSuperVariable.cpp/MeSuperVariable.h. 5.fix the problem that ultrasonic module can only measure the maximum range of 375cm,and the maximum range of normal requirements is 400cm.|
 | Nicolas Bourré |  2023/10/16 | 3.28 | 1. Added missing `gyro.getGyroZ`. 2. Compliant semver.org version number. 3. Added `gyro.resetData` function. 4. Modified the gyro address if it is an Auriga board. |
 | Nicolas Bourré |  2025/04/30 | 3.28.1 | Added the MeRGBLineFollower class. |
+| Nick B |  2025/09/24 | 3.29.0 | 1. Added `getTemperature()` method to MeGyro class for MPU-6050 internal temperature sensor. 2. Fixed multiple definition linker errors by moving MeAuriga global array initializations to .cpp file. 3. Added AurigaTempSensors example demonstrating dual temperature sensor reading (gyro + onboard NTC). |
 
 # Issues
 
