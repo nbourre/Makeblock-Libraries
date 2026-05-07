@@ -96,7 +96,7 @@ extern MePort_Sig mePort[17];  // mePort[0] is nonsense
 #define PORT_15 (0x0f)
 #define PORT_16 (0x10)
 
-#ifdef MeMbot_H
+#ifdef MeMCore_H
 #define PORT_RGB           (0x05)
 #define PORT_LightSensor   (0x06)
 #endif
