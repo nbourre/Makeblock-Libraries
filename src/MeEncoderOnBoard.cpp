@@ -839,6 +839,25 @@ int16_t MeEncoderOnBoard::pidPositionToPwm(void)
 
   pos_error = distanceToGo();
 
+  if((_Lock_flag == true) || (abs(pos_error) <= ENCODER_POS_DEADBAND))
+  {
+    _Lock_flag = true;
+    _Encoder_output = 0;
+    encode_structure.currentPwm = 0;
+    encode_structure.PID_pos.Output = 0;
+    encode_structure.PID_pos.Integral = 0;
+    encode_structure.PID_pos.last_error = 0;
+    encode_structure.PID_speed.Output = 0;
+    encode_structure.PID_speed.Integral = 0;
+    encode_structure.PID_speed.last_error = 0;
+    if((_callback != NULL) && (_Callback_flag == false))
+    {
+      _Callback_flag = true;
+      _callback(_Slot,_extId);
+    }
+    return 0;
+  }
+
   if((_Lock_flag == false) && (_Dir_lock_flag == true) && (pos_error < 0))
   {
     d_component = encode_structure.currentSpeed;
@@ -861,7 +880,7 @@ int16_t MeEncoderOnBoard::pidPositionToPwm(void)
   }
       
   //speed pid;
-  if((_Lock_flag == false) && (abs(pos_error) >= encode_structure.targetSpeed * DECELERATION_DISTANCE_PITCH))
+  if(abs(pos_error) >= encode_structure.targetSpeed * DECELERATION_DISTANCE_PITCH)
   {
     speed_error = encode_structure.currentSpeed - encode_structure.targetSpeed * (pos_error/abs(pos_error));
     // Avoid integrating further when the previous PWM command is saturated.
@@ -884,48 +903,22 @@ int16_t MeEncoderOnBoard::pidPositionToPwm(void)
   //position pid;
   else
   {
-    if((_Lock_flag == false) && (abs(pos_error) > ENCODER_POS_DEADBAND))
-    {
-      seek_speed = sqrt(abs(encode_structure.targetSpeed * DECELERATION_DISTANCE_PITCH * (pos_error-ENCODER_POS_DEADBAND)))/DECELERATION_DISTANCE_PITCH;
-      d_component = encode_structure.currentSpeed - seek_speed * (pos_error/abs(pos_error));
-      out_put_offset = encode_structure.PID_pos.D * d_component;
-      out_put_offset = constrain(out_put_offset,-20,20);
+    seek_speed = sqrt(abs(encode_structure.targetSpeed * DECELERATION_DISTANCE_PITCH * (pos_error-ENCODER_POS_DEADBAND)))/DECELERATION_DISTANCE_PITCH;
+    d_component = encode_structure.currentSpeed - seek_speed * (pos_error/abs(pos_error));
+    out_put_offset = encode_structure.PID_pos.D * d_component;
+    out_put_offset = constrain(out_put_offset,-20,20);
 
-      encode_structure.PID_pos.Output = _Encoder_output;
-      encode_structure.PID_pos.Output -= out_put_offset;
-      if(pos_error >= 0)
-      {
-        encode_structure.PID_pos.Output = constrain(encode_structure.PID_pos.Output,PWM_MIN_OFFSET,255);
-      }
-      else
-      {
-        encode_structure.PID_pos.Output = constrain(encode_structure.PID_pos.Output,-255,-PWM_MIN_OFFSET);
-      }
-      _Encoder_output = encode_structure.PID_pos.Output;
+    encode_structure.PID_pos.Output = _Encoder_output;
+    encode_structure.PID_pos.Output -= out_put_offset;
+    if(pos_error >= 0)
+    {
+      encode_structure.PID_pos.Output = constrain(encode_structure.PID_pos.Output,PWM_MIN_OFFSET,255);
     }
     else
     {
-      _Lock_flag = true;
-      if((_callback != NULL) && (_Callback_flag == false))
-      {
-        _Callback_flag = true;
-        _callback(_Slot,_extId);
-      }
-      d_component = encode_structure.currentSpeed;
-      out_put_offset = encode_structure.PID_pos.D * d_component;
-      out_put_offset = constrain(out_put_offset,-20,20);
-      const float integral_limit = 500.0f;
-      if(abs(_Encoder_output) < 255.0f)
-      {
-        encode_structure.PID_pos.Integral += pos_error;
-        encode_structure.PID_pos.Integral = constrain(encode_structure.PID_pos.Integral,-integral_limit,integral_limit);
-      }
-      encode_structure.PID_pos.Output = pos_error * encode_structure.PID_pos.P;
-      encode_structure.PID_pos.Output -= out_put_offset;
-      encode_structure.PID_pos.Output += encode_structure.PID_pos.I * encode_structure.PID_pos.Integral;
-      encode_structure.PID_pos.Output = constrain(encode_structure.PID_pos.Output,-255,255);
-      _Encoder_output = encode_structure.PID_pos.Output;
+      encode_structure.PID_pos.Output = constrain(encode_structure.PID_pos.Output,-255,-PWM_MIN_OFFSET);
     }
+    _Encoder_output = encode_structure.PID_pos.Output;
   }
 #ifdef DEBUG_INFO
   Serial.print("targetPos:");

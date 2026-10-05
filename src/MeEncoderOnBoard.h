@@ -91,8 +91,8 @@
 typedef struct
 {
   /*
-    * PID gains and controller state. The control loops update Integral and
-    * last_error when applying the integral and derivative terms.
+    * Speed control uses Integral and last_error; position control uses its P/D
+    * gains and cuts PWM inside the position deadband.
    */
   float P, I, D;
   float Setpoint, Output, Integral, differential, last_error;
