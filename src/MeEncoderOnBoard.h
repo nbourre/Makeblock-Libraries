@@ -90,6 +90,10 @@
 
 typedef struct
 {
+  /*
+    * PID gains and controller state. The control loops update Integral and
+    * last_error when applying the integral and derivative terms.
+   */
   float P, I, D;
   float Setpoint, Output, Integral, differential, last_error;
 } PID_internal;
