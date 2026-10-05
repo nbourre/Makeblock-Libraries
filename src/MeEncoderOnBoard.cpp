@@ -186,16 +186,16 @@ void MeEncoderOnBoard::reset(uint8_t slot)
   pinMode(_Port_H1, OUTPUT);
   pinMode(_Port_H2, OUTPUT);
   
-  /*
-   * WARNING: this reset() path currently preserves the previous encoder state
-   * because the initialization block is commented out. If reset() is meant to
-   * fully reinitialize the driver, restore those assignments here.
-   */
+  // Keep encoder configuration and position, but clear accumulated PID history.
   // encode_structure.pulsePos = 0;
   // encode_structure.previousPwm = 500;
   // encode_structure.mode = DIRECT_MODE;
   // encode_structure.pulseEncoder = 9;
   // encode_structure.ratio = 39.267;
+  encode_structure.PID_speed.Integral = 0;
+  encode_structure.PID_speed.last_error = 0;
+  encode_structure.PID_pos.Integral = 0;
+  encode_structure.PID_pos.last_error = 0;
   
   if(_Port_A == 18)
   {
@@ -669,6 +669,8 @@ void MeEncoderOnBoard::moveTo(long position,float speed,int16_t extId,cb callbac
   encode_structure.mode = PID_MODE;
   encode_structure.motionState = MOTION_WITH_POS;
   encode_structure.targetPos = position;
+  encode_structure.PID_speed.Integral = 0;
+  encode_structure.PID_speed.last_error = 0;
   encode_structure.PID_pos.Integral = 0;
   encode_structure.PID_pos.last_error = 0;
   _callback = callback;
