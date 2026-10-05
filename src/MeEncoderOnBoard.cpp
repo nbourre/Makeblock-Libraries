@@ -91,7 +91,7 @@
  */
 MeEncoderOnBoard::MeEncoderOnBoard()
 {
-
+  _posDeadBand = DEFAULT_ENCODER_POS_DEADBAND;
 }
 
 /**
@@ -101,6 +101,7 @@ MeEncoderOnBoard::MeEncoderOnBoard()
  */
 MeEncoderOnBoard::MeEncoderOnBoard(int slot)
 {
+  _posDeadBand = DEFAULT_ENCODER_POS_DEADBAND;
   _enabled = false;
   _Slot = slot;
   _Port_A = encoder_Port[slot].port_A;
@@ -758,6 +759,16 @@ void MeEncoderOnBoard::setPosPid(float p,float i,float d)
   encode_structure.PID_pos.last_error = 0;
 }
 
+void MeEncoderOnBoard::setPosDeadBand(long deadBand)
+{
+  _posDeadBand = (deadBand < 0) ? 0 : deadBand;
+}
+
+long MeEncoderOnBoard::getPosDeadBand(void) const
+{
+  return _posDeadBand;
+}
+
 /**
  * \par Function
  *    setPulse
@@ -839,7 +850,7 @@ int16_t MeEncoderOnBoard::pidPositionToPwm(void)
 
   pos_error = distanceToGo();
 
-  if((_Lock_flag == true) || (abs(pos_error) <= ENCODER_POS_DEADBAND))
+  if((_Lock_flag == true) || (abs(pos_error) <= _posDeadBand))
   {
     _Lock_flag = true;
     _Encoder_output = 0;
@@ -903,7 +914,7 @@ int16_t MeEncoderOnBoard::pidPositionToPwm(void)
   //position pid;
   else
   {
-    seek_speed = sqrt(abs(encode_structure.targetSpeed * DECELERATION_DISTANCE_PITCH * (pos_error-ENCODER_POS_DEADBAND)))/DECELERATION_DISTANCE_PITCH;
+    seek_speed = sqrt(abs(encode_structure.targetSpeed * DECELERATION_DISTANCE_PITCH * (abs(pos_error)-_posDeadBand)))/DECELERATION_DISTANCE_PITCH;
     d_component = encode_structure.currentSpeed - seek_speed * (pos_error/abs(pos_error));
     out_put_offset = encode_structure.PID_pos.D * d_component;
     out_put_offset = constrain(out_put_offset,-20,20);

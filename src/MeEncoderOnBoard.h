@@ -85,7 +85,7 @@
 #define MOTION_WITHOUT_POS     0x01
 
 #define PWM_MIN_OFFSET                 25
-#define ENCODER_POS_DEADBAND           10
+#define DEFAULT_ENCODER_POS_DEADBAND   10
 #define DECELERATION_DISTANCE_PITCH    6 
 
 typedef struct
@@ -565,6 +565,16 @@ public:
   void setPosPid(float p,float i,float d);
 
 /**
+ * Set the position deadband in degrees. Negative values are treated as zero.
+ */
+  void setPosDeadBand(long deadBand);
+
+/**
+ * Get the position deadband in degrees.
+ */
+  long getPosDeadBand(void) const;
+
+/**
  * \par Function
  *    setPulse
  * \par Description
@@ -711,6 +721,7 @@ public:
 
 private:
    volatile Me_Encoder_type encode_structure;
+  long _posDeadBand;
    boolean _Lock_flag;
    boolean _Dir_lock_flag;
    boolean _Callback_flag;
