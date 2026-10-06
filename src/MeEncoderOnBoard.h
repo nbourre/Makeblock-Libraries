@@ -92,7 +92,8 @@ typedef struct
 {
   /*
     * Speed control uses Integral and last_error; position control uses its P/D
-    * gains and cuts PWM inside the position deadband.
+    * gains. Once the target is reached, the legacy mode keeps holding the
+    * position with P/D, and the full position PID cuts PWM inside the deadband.
    */
   float P, I, D;
   float Setpoint, Output, Integral, differential, last_error;
@@ -575,6 +576,13 @@ public:
   long getPosDeadBand(void) const;
 
 /**
+ * Enable or disable the full cascaded P/I/D position controller.
+ * Disabled by default to preserve the legacy position-control behavior,
+ * including the active P/D position hold after the target is reached.
+ */
+  void setFullPositionPidEnabled(boolean enabled);
+
+/**
  * \par Function
  *    setPulse
  * \par Description
@@ -722,6 +730,7 @@ public:
 private:
    volatile Me_Encoder_type encode_structure;
   long _posDeadBand;
+  boolean _fullPositionPidEnabled;
    boolean _Lock_flag;
    boolean _Dir_lock_flag;
    boolean _Callback_flag;
