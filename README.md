@@ -157,7 +157,7 @@ void loop() {
 | Nicolas Bourré |  2025/04/30 | 3.28.1 | Added the MeRGBLineFollower class. |
 | Nick B |  2025/09/24 | 3.29.0 | 1. Added `getTemperature()` method to MeGyro class for MPU-6050 internal temperature sensor. 2. Added full accelerometer functionality to MeGyro class with `getAccX()`, `getAccY()`, `getAccZ()`, and `getAcc(index)` methods. 3. Fixed multiple definition linker errors by moving MeAuriga global array initializations to .cpp file. 4. Fixed accelerometer initialization by properly configuring register 0x1c for ±2g range. 5. Added AurigaTempSensors example demonstrating dual temperature sensor reading (gyro + onboard NTC). 6. Updated Auriga_MeGyroTest example with Serial Plotter compatibility and comprehensive sensor data display. 7. Enhanced MeGyro class with proper accelerometer sensitivity handling and raw data processing. |
 | koekjesbakker |  2026/05/07 | 3.30.0 | 1. Added the `MeAudioPlayer` class back to the library. 2. Restored the `SimplePlayback` example. 3. Kept the Auriga-related integration changes included with the audio player update. |
-| Nick B |  2026/10/05 | 3.31.0 | Added opt-in cascaded P/I/D position control while preserving legacy behavior by default, configurable position deadband (PWM cutoff in cascaded mode, legacy P/D hold otherwise), and an Auriga serial PID tuning example. |
+| Nick B |  2026/10/05 | 3.31.0 | Added opt-in cascaded P/I/D position control while preserving legacy behavior by default, configurable position deadband (PWM cutoff inside the deadband in both modes, legacy P/D hold outside it), and an Auriga serial PID tuning example. |
 
 # Issues
 

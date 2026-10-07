@@ -898,9 +898,10 @@ int16_t MeEncoderOnBoard::pidPositionToPwm(void)
      * Legacy behavior (pre 3.30.0): once the target is reached, keep actively
      * holding the position with a P term and a D brake on the current speed.
      * The motor resists external load and pulls back after an overshoot.
-     * Only the full cascaded position PID cuts the PWM inside the deadband.
+     * The PWM is cut inside the deadband in both modes: a small hold PWM
+     * cannot move the motor and only makes it whine.
      */
-    if(!_fullPositionPidEnabled)
+    if(!_fullPositionPidEnabled && !in_deadband)
     {
       d_component = encode_structure.currentSpeed;
       out_put_offset = encode_structure.PID_pos.D * d_component;

@@ -92,8 +92,9 @@ typedef struct
 {
   /*
     * Speed control uses Integral and last_error; position control uses its P/D
-    * gains. Once the target is reached, the legacy mode keeps holding the
-    * position with P/D, and the full position PID cuts PWM inside the deadband.
+    * gains. Both modes cut PWM inside the deadband. Once the target is reached,
+    * the legacy mode holds the position with P/D outside the deadband, and the
+    * full position PID resumes cascaded control.
    */
   float P, I, D;
   float Setpoint, Output, Integral, differential, last_error;
